@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: cilicili
+  datasource:
+    url: jdbc:postgresql://localhost:5432/test
+    username: root
+    password: secret
+    driver-class-name: org.postgresql.Driver
+  data:
+    redis:
+      port: 6379
+      host: localhost
+      database: 0
+  jpa:
+    show-sql: true
+
+server:
+  port: 9000
+  shutdown: graceful
+
+application:
+  security:
+    jwt:
+      secret-key: test123
+      expiration: 36000
+      refresh-token:
+        expiration: 36000
