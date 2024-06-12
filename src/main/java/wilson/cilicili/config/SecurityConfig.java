@@ -27,7 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(a -> a.requestMatchers(
-                        "/api/v1/auth/**",
+                        "/api/v1/auth/*",
                         "/v2/api-docs",
                         "/v3/api-docs",
                         "/v3/api-docs/**",

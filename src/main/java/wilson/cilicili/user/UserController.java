@@ -1,24 +1,24 @@
 package wilson.cilicili.user;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wilson.cilicili.model.request.RegisterRequest;
 
-
-@Tag(name = "user")
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
-
     @Resource
     private UserService userService;
 
     @Resource
     private AuthenticationService authenticationService;
 
-    @RestController
-    static class Auth {
-
+    @PostMapping("/auth/register")
+    String register(@RequestBody @Valid RegisterRequest request) {
+        return authenticationService.register(request.getUsername(),request.getPassword(),request.getEmail());
     }
 }
