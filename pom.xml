@@ -11,8 +11,8 @@
     <groupId>wilson</groupId>
     <artifactId>cilicili</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>show_data</name>
-    <description>show_data</description>
+    <name>cilicili</name>
+    <description>cilicili</description>
     <properties>
         <java.version>17</java.version>
     </properties>
