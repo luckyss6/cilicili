@@ -1,4 +1,4 @@
-package wilson.cilicili.user;
+package wilson.cilicili.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

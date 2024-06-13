@@ -1,4 +1,4 @@
-package wilson.cilicili.user;
+package wilson.cilicili.config;
 
 import jakarta.annotation.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import wilson.cilicili.model.entities.UserInfo;
+import wilson.cilicili.user.UserRepository;
 
 import java.util.NoSuchElementException;
 

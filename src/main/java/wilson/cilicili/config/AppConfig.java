@@ -49,19 +49,5 @@ public class AppConfig {
         return new BCryptPasswordEncoder();
     }
 
-    @Value("${cos.secret-id}")
-    private String secretId;
 
-    @Value("${cos.secret-key}")
-    private String secretKey;
-
-    @Value("${cos.region}")
-    private String regions;
-
-    @Bean
-    public COSClient cosClient() {
-        ClientConfig clientConfig = new ClientConfig(new Region(regions));
-        clientConfig.setHttpProtocol(HttpProtocol.https);
-        return new COSClient(new BasicCOSCredentials(secretId, secretKey), clientConfig);
-    }
 }

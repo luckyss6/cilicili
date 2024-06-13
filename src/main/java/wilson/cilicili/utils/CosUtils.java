@@ -1,16 +1,22 @@
 package wilson.cilicili.utils;
 
 import com.qcloud.cos.COSClient;
-import jakarta.annotation.Resource;
-import org.springframework.stereotype.Component;
+import com.qcloud.cos.transfer.TransferManager;
+import com.qcloud.cos.transfer.TransferManagerConfiguration;
 
-@Component
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class CosUtils {
-    @Resource
-    private COSClient cosClient;
 
-    public static void uploadVideo() {
+    public static TransferManager createTransferManager(COSClient cosClient) {
+        ExecutorService threadPool = Executors.newFixedThreadPool(32);
+        TransferManager transferManager = new TransferManager(cosClient, threadPool);
+        TransferManagerConfiguration transferManagerConfiguration = new TransferManagerConfiguration();
+        transferManagerConfiguration.setMultipartUploadThreshold(5*1024*1024);
+        transferManagerConfiguration.setMinimumUploadPartSize(1*1024*1024);
+        transferManager.setConfiguration(transferManagerConfiguration);
 
-
+        return transferManager;
     }
 }
