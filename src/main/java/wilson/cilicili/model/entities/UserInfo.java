@@ -29,6 +29,11 @@ public class UserInfo implements UserDetails {
 
     private String email;
 
+//    @OneToMany
+//    @JoinTable(name = "user_video",
+//    joinColumns = {@JoinColumn(name = "id", referencedColumnName = "user_id")}
+//    )
+
     @CreationTimestamp
     private LocalDateTime createdAt;
 

@@ -3,11 +3,9 @@ package wilson.cilicili.user;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.exception.CosClientException;
 import com.qcloud.cos.exception.CosServiceException;
-import com.qcloud.cos.model.*;
-import com.qcloud.cos.model.ciModel.snapshot.SnapshotRequest;
-import com.qcloud.cos.model.ciModel.snapshot.SnapshotResponse;
-import com.qcloud.cos.transfer.TransferManager;
-import com.qcloud.cos.transfer.Upload;
+import com.qcloud.cos.model.COSObjectSummary;
+import com.qcloud.cos.model.ListObjectsRequest;
+import com.qcloud.cos.model.ObjectListing;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -21,9 +19,7 @@ import wilson.cilicili.config.AuthenticationService;
 import wilson.cilicili.model.entities.UserInfo;
 import wilson.cilicili.model.request.LoginRequest;
 import wilson.cilicili.model.request.RegisterRequest;
-import wilson.cilicili.utils.CosUtils;
 
-import java.io.File;
 import java.util.List;
 
 @RestController
@@ -75,34 +71,23 @@ public class UserController {
 
     @PostMapping("/video/upload")
     ResponseEntity<?> uploadVideo(@RequestParam("file") MultipartFile multipartFile) {
-        TransferManager transferManager = CosUtils.createTransferManager(cosClient);
-        try {
-            var key = "video/test_video_123.mov";
-            String fileName = multipartFile.getOriginalFilename();
-            assert fileName != null;
-            String prefix = fileName.substring(fileName.lastIndexOf("."));
+         var user = (UserInfo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+         try {
+             userService.uploadVideo(user,multipartFile);
+         } catch (Exception e) {
+             return ResponseEntity.badRequest().body(e.getMessage());
+         }
 
-            File file = File.createTempFile(fileName, prefix);
-            multipartFile.transferTo(file);
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
-            Upload upload = transferManager.upload(putObjectRequest);
-            UploadResult uploadResult = upload.waitForUploadResult();
-
-            SnapshotRequest request = new SnapshotRequest();
-            request.setBucketName(bucketName);
-            request.getInput().setObject(key);
-            request.getOutput().setBucket(bucketName);
-            request.getOutput().setRegion("ap-guangzhou");
-            request.getOutput().setObject("pic/test.jpg");
-            request.setTime("2");
-            SnapshotResponse response = cosClient.generateSnapshot(request);
-            System.out.println("response = " + response);
-            return ResponseEntity.ok(uploadResult);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } finally {
-            transferManager.shutdownNow(false);
-        }
+//        try {
+//
+//            System.out.println("response = " + response);
+//            return ResponseEntity.ok(uploadResult);
+//        } catch (Exception e) {
+//
+//        } finally {
+//            transferManager.shutdownNow(false);
+//        }
+        return null;
     }
 
     @GetMapping("/video/list")
@@ -121,7 +106,6 @@ public class UserController {
         }
         List<COSObjectSummary> cosObjectSummaries = objectListing.getObjectSummaries();
         for (COSObjectSummary cosObjectSummary : cosObjectSummaries) {
-            // 对象的 key
             String key = cosObjectSummary.getKey();
             return ResponseEntity.ok(cosClient.getObjectUrl(bucketName, key));
         }
