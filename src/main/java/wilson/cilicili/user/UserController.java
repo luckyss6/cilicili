@@ -4,6 +4,8 @@ import com.qcloud.cos.COSClient;
 import com.qcloud.cos.exception.CosClientException;
 import com.qcloud.cos.exception.CosServiceException;
 import com.qcloud.cos.model.*;
+import com.qcloud.cos.model.ciModel.snapshot.SnapshotRequest;
+import com.qcloud.cos.model.ciModel.snapshot.SnapshotResponse;
 import com.qcloud.cos.transfer.TransferManager;
 import com.qcloud.cos.transfer.Upload;
 import jakarta.annotation.Resource;
@@ -85,6 +87,16 @@ public class UserController {
             PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file);
             Upload upload = transferManager.upload(putObjectRequest);
             UploadResult uploadResult = upload.waitForUploadResult();
+
+            SnapshotRequest request = new SnapshotRequest();
+            request.setBucketName(bucketName);
+            request.getInput().setObject(key);
+            request.getOutput().setBucket(bucketName);
+            request.getOutput().setRegion("ap-guangzhou");
+            request.getOutput().setObject("pic/test.jpg");
+            request.setTime("2");
+            SnapshotResponse response = cosClient.generateSnapshot(request);
+            System.out.println("response = " + response);
             return ResponseEntity.ok(uploadResult);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -99,9 +111,7 @@ public class UserController {
         listObjectsRequest.setBucketName(bucketName);
         listObjectsRequest.setPrefix("");
         listObjectsRequest.setMaxKeys(10);
-
         ObjectListing objectListing = null;
-
         try {
             objectListing = cosClient.listObjects(listObjectsRequest);
         } catch (CosServiceException e) {
