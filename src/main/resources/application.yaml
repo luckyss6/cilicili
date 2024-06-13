@@ -21,7 +21,7 @@ server:
 application:
   security:
     jwt:
-      secret-key: test123
+      secret-key: 111111111111111111111111122222222222222222222222222222
       expiration: 36000
       refresh-token:
         expiration: 36000
